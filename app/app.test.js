@@ -33,11 +33,37 @@ describe('GET',() => {
     describe('/api', () => {
         test('return with an object describing all endpoints available ', async () => {
             const response = await request(app).get('/api')
+            // console.log(response.body)
             expect(200)
             expect(response.body).toEqual(endpoints)
         });
   
         //  struggling on how to implement error handling  
+  
+  })
+})
+
+describe('GET',() => {
+    describe('/api/articles/:article-id', () => {
+        test('return with an object describing all endpoints available ', async () => {
+            const response = await request(app).get('/api/articles/1');
+            
+            expect(200)
+            expect(response.body.article_id).toBe(1)
+        })
+        test('test for bad request errors ', async () => {
+            const response = await request(app).get('/api/articles/dog');
+            
+            expect(400)
+            expect(response.body.msg).toBe("Bad Request")
+        })
+        test('test for invalid id error ', async () => {
+            const response = await request(app).get('/api/articles/99999999');
+            expect(400)
+            expect(response.body.msg).toBe("invalid id")
+        });
+  
+        
   
   })
 })

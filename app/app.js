@@ -3,43 +3,28 @@ const fs = require('fs/promises')
 
 const app = express();
 
-// const handleErrors = require('errorhandler.js')
+const docs = require('../endpoints.json')
+
+const {errorHandlerBadForm,errorhandlerinvalid} = require('./errorhandler.js')
 
 const {getTopics} = require('./controllers/topics.controller');
-const { Console } = require('console');
+const {getArticleById} = require('./controllers/articles.controller')
 
-
-
-
-
-
-
-// app.use(handleErrors)
 
 
 app.get('/api/topics',getTopics)
 
-//reads the file
-//returns the endpoints.json file when you make this request
-//don't know if i have actually changed it or what 
 
-app.get('/api', (req,res) => {
-    fs.readFile('endpoints.json','utf-8',(err,data) => {
-        if (err) {
-            console.log(err)
-            return new Error;
-        }
-        else {
-            console.log(JSON.stringify(data))
-            return data
-        }
-    }).then((response) => {
-            res.status(200).send(JSON.parse(response))
-        }).catch((err) => {
-            Console.log("err")
-            next(err)
-        })
-    })
+app.get('/api/articles/:article_id',getArticleById)
+app.get('/api', getDocs)
+
+
+function getDocs (req,res){
+    return res.status(200).send(docs)
+}
+
+app.use(errorHandlerBadForm)
+app.use(errorhandlerinvalid)
 
 
 
