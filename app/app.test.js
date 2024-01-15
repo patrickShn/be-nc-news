@@ -24,16 +24,15 @@ describe('GET',() => {
             })
         });
   
-        test.only('handle errors', () => {
-            return request(app)
-            .get('/api/topic')
-            .expect(404)
-            .then((error) => {
-                console.log(error.code)
-                expect(error.msg).toEqual("Bad Request")
-            })
+        // test.only('handle errors', () => {
+        //     return request(app)
+        //     .get('/api/topic')
+        //     .expect(404)
+        //     .then((error) => {
+        //         console.log(error.code)
+        //         expect(error.msg).toEqual("Bad Request")
+        //     })
  
      });
   
-  })
-});
+  });

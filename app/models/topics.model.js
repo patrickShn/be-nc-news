@@ -5,7 +5,7 @@ exports.fetchTopics = () => {
     .then((result) => {
         return result.rows
     }).catch((error) => {
-        console.log(error)
+        // console.log(error)
         next(error)
     })
 }
