@@ -4,5 +4,8 @@ exports.fetchTopics = () => {
     return db.query(`SELECT * FROM topics;`)
     .then((result) => {
         return result.rows
-    });
+    }).catch((error) => {
+        // console.log(error)
+        next(error)
+    })
 }

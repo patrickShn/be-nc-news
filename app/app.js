@@ -1,15 +1,17 @@
 const express = require('express')
-
 const app = express();
-
-// const handleErrors = require('errorhandler.js')
-
+const {errorHandler} = require('./errorhandler')
 const {getTopics} = require('./controllers/topics.controller')
 
 
-// app.use(handleErrors)
 
+app.use(express.json())
 
 app.get('/api/topics',getTopics)
+
+
+
+app.use(errorHandler);
+
 
 module.exports = app;

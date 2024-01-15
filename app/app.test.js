@@ -17,18 +17,22 @@ describe('GET',() => {
             .get('/api/topics')
             .expect(200)
             .then((response) => {
-                console.log(response)
                response.body.topics.forEach((topic) => {
-                //testing for a truthy value to see if these properties exist
                 expect(typeof topic.description).toBe("string")
                 expect(typeof topic.slug).toBe("string")
                })
             })
         });
   
-        test('Test Case 2', () => {
+        // test.only('handle errors', () => {
+        //     return request(app)
+        //     .get('/api/topic')
+        //     .expect(404)
+        //     .then((error) => {
+        //         console.log(error.code)
+        //         expect(error.msg).toEqual("Bad Request")
+        //     })
  
      });
   
-  })
-});
+  });
