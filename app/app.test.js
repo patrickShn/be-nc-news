@@ -60,7 +60,7 @@ describe('GET',() => {
 
 describe('GET',() => {
     describe('/api/articles', () => {
-        test.skip('return with an array of article objects, sorted by oldest first ', async () => {
+        test('return with an array of article objects, sorted by oldest first ', async () => {
             const response = await request(app).get('/api/articles');
             // console.log(response.body)
             expect(200)
@@ -72,14 +72,14 @@ describe('GET',() => {
              //unsure of how to test number is correct
             })
         })
-        test.only('test for errors ', async () => {
-            // how do I test for errors?
-            const response = await request(app).get(`/api/article`);
-            console.log(response.body)
-            expect(500)
-            expect(response.body.msg).toBe("generic server error")
+        // test('test for errors ', async () => {
+        //     // how do I test for errors?
+        //     const response = await request(app).get(`/api/article`);
+        //     console.log(response.body)
+        //     expect(500)
+        //     expect(response.body.msg).toBe("generic server error")
             
-        });
+        // });
  
   })
 })
