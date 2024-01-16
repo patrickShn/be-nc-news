@@ -8,7 +8,6 @@ exports.errorHandlerBadForm = (err,req,res,next) => {
 }
 
 exports.errorhandlerinvalid = (err,req,res,next) => {
-    console.log(err)
     if (err.msg === "invalid id"){
         res.status(404).send({msg: "invalid id"})
     } else {

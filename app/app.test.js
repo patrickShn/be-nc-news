@@ -62,7 +62,6 @@ describe('GET',() => {
     describe('/api/articles', () => {
         test('return with an array of article objects, sorted by oldest first ', async () => {
             const response = await request(app).get('/api/articles');
-            // console.log(response.body)
             expect(200)
             expect(response.body).toBeSortedBy('created_at',{
                 descending:true,
@@ -72,15 +71,6 @@ describe('GET',() => {
              //unsure of how to test number is correct
             })
         })
-        // test('test for errors ', async () => {
-        //     // how do I test for errors?
-        //     const response = await request(app).get(`/api/article`);
-        //     console.log(response.body)
-        //     expect(500)
-        //     expect(response.body.msg).toBe("generic server error")
-            
-        // });
- 
   })
 })
 

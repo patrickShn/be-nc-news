@@ -26,8 +26,6 @@ exports.fetchArticles = async (sort_by = 'created_at', order = 'DESC') => {
     ON articles.article_id = comments.article_id
      ORDER BY articles.${sort_by} ${order};`;
     return db.query(queryString).then( async ({rows}) => {
-        console.log(rows)
-        //async
             const updatedRows = await Promise.all(rows.map( async (row) => {
                 const rowArticleId = row.article_id;
                 const commentCountQuery = await db.query(`SELECT COUNT(*)
@@ -40,7 +38,6 @@ exports.fetchArticles = async (sort_by = 'created_at', order = 'DESC') => {
         return updatedRows
     
     }).catch((err) => {
-        console.log(err,"line43")
         next(err)
     })
     
