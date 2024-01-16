@@ -8,9 +8,8 @@ exports.errorHandlerBadForm = (err,req,res,next) => {
 }
 
 exports.errorhandlerinvalid = (err,req,res,next) => {
-   
-    if (err.message === "Invalid id"){
-        res.status(400).send({msg: "invalid id"})
+    if (err.msg === "invalid id"){
+        res.status(404).send({msg: "invalid id"})
     } else {
         res.status(500).send({msg: "generic error"})
     }
