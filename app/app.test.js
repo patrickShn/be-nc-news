@@ -90,6 +90,9 @@ describe('GET',() => {
                     commentsResponse.body.forEach((comment) => {
                         expect(comment.article_id).toBe(3)
                         expect(typeof comment.comment_id).toBe("number")
+                        expect(typeof comment.votes).toBe("number")
+                        expect(typeof comment.article_id).toBe("number")
+                        expect(typeof comment.author).toBe("string")
                     })
                 })
                 test('test with bad request ', async () => {
@@ -106,3 +109,66 @@ describe('GET',() => {
   })
 
 
+  describe('POST',() => {
+    describe('/api/articles', () => {
+        describe('/:article_id', () => {
+            describe('/comments', () => {
+                test('accepts an object with author and body properties, returns the posted comment' ,() => {
+                      return request(app)
+                        .post('/api/articles/3/comments')
+                        .send({
+                            author: 'butter_bridge',
+                            body: 'hello, great video.',
+                          })
+                        .expect(201)
+                        .then((response) => {
+                          expect(response.body.article_id).toBe(3);
+                          expect(response.body.author).toBe('butter_bridge');
+                          expect(response.body.body).toBe("hello, great video.");
+                        })
+                    })
+                    test('400- error for post that is missing properties', () => {
+                       const IncompleteComment ={
+                        author:'lurker'
+                       }
+                       return request(app)
+                       .post('/api/articles/4/comments')
+                       .send(IncompleteComment)
+                       .expect(400)
+                       .then((response) => {
+                        expect(response.body.msg).toBe("missing one or more properties")
+                       })
+                    })
+                    test('400 - item Id does not exist ', () => {
+                        const Comment ={
+                            author:'lurker',
+                            body: "hello chum"
+                           }
+                           return request(app)
+                           .post('/api/articles/dog/comments')
+                           .send(Comment)
+                           .expect(400)
+                           .then((response) => {
+                            expect(response.body.msg).toBe("Bad Request")
+                           })
+                    })
+                    test('404 - invalid id ', () => {
+                        const Comment ={
+                            author:'lurker',
+                            body: "hello chum"
+                           }
+                           return request(app)
+                           .post('/api/articles/999999999999999/comments')
+                           .send(Comment)
+                           .expect(404)
+                           .then((response) => {
+                            expect(response.body.msg).toBe("invalid id")
+                           })
+                    })
+                })
+                })
+               
+        }) 
+    })
+
+   

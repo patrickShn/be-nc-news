@@ -11,8 +11,19 @@ exports.fetchCommentsByArticleId = (article_id) => {
         return Promise.reject(rows)
         }
         return rows
-    }).catch((err) => {
-        return Promise.reject(err)
+    })
+}
+
+exports.addCommentToArticle = (article_id, comment) => {
+    const body = comment.body;
+    const author = comment.author;
+    return db.query(`INSERT INTO comments (author, body, article_id)
+    VALUES
+    ($1 ,$2, $3)
+    RETURNING 
+    *;`, [author, body, `${article_id}`])
+    .then(({rows}) => {
+        return rows[0]
     })
 }
 
