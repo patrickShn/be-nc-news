@@ -1,4 +1,14 @@
 
+exports.psqlerror = (err,req,res,next) => {
+    
+    if (err.code === "42703"){
+        res.status(400).send({msg: "psql error"})
+    } else {
+        next(err)
+    }
+}
+
+
 exports.errorHandlerBadForm = (err,req,res,next) => {
     if (err.code === "22P02"){
         res.status(400).send({msg: "Bad Request"})
@@ -8,7 +18,7 @@ exports.errorHandlerBadForm = (err,req,res,next) => {
 }
 
 exports.errorhandlerinvalid = (err,req,res,next) => {
-    if (err.msg === "invalid id"){
+    if (err.length === 0){
         res.status(404).send({msg: "invalid id"})
     } else {
         res.status(500).send({msg: "generic error"})

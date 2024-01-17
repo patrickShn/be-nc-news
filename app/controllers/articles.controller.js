@@ -12,10 +12,7 @@ exports.getArticleById = (req,res,next) => {
 
 
 exports.getArticles = (req,res,next) => {
-
-    fetchArticles().then((response) => {
-        res.status(200).send(response)
-    }).catch((err) => {
-        next(err)
+    fetchArticles().then((articles) => {
+        res.status(200).send(articles)
     })
 }
