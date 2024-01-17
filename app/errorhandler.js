@@ -1,11 +1,14 @@
 
-exports.psqlerror = (err,req,res,next) => {
+exports.PSQLerror = (err,req,res,next) => {
     if (err.code === "42703"){
-        res.status(400).send({msg: "bad request"})
+        res.status(404).send({msg: "bad input - column doesn't exist"})
     } 
     else if (err.code === "23502"){
         res.status(400).send({msg: "missing one or more properties"})
-    }else {
+    }
+    else if (err.code === "23503"){
+        res.status(400).send({msg: "invalid id"})
+    }else  {
         next(err)
     }
 }
@@ -13,18 +16,15 @@ exports.psqlerror = (err,req,res,next) => {
 
 exports.errorHandlerBadForm = (err,req,res,next) => {
     if (err.code === "22P02"){
-        res.status(400).send({msg: "bad request"})
+        res.status(400).send({msg: "invalid input type"})
     } else {
         next(err)
     }
 }
 
 exports.errorhandlerinvalid = (err,req,res,next) => {
-    if (err.length === 0 || err.code === "22003"){
-        res.status(400).send({msg: "invalid id"})
-    } 
     if (err.msg === 'invalid id'){
-        res.status(400).send(err)
+        res.status(404).send(err)
     }
     else {
         res.status(500).send({msg: "generic error"})

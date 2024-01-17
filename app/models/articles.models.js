@@ -4,7 +4,7 @@ const { articleData } = require('../../db/data/test-data')
 exports.fetchArticleById = (article_id) => {
    return db.query(`SELECT * FROM articles WHERE article_id = $1;`,[article_id]).then(({rows}) => {
     if (rows.length === 0){
-        return Promise.reject(rows)
+        return Promise.reject({status:400, msg: "invalid id"})
     }
     return rows[0]
     })
@@ -34,12 +34,12 @@ exports.updateArticleWithVotes = (article_id, inc_votes) => {
         `UPDATE articles
         SET votes =  votes + ${inc_votes}
         WHERE article_id = ${article_id}
-        RETURNING *;`
+        RETURNING *`
         ).then(({rows}) => {
             if (rows.length === 0){
-                return Promise.reject({status: 400, msg:"invalid id"})
+                return Promise.reject({status: 404, msg:"invalid id"})
             }
-            return rows[0];
+            return rows;
         })
 
 }

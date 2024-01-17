@@ -20,11 +20,9 @@ exports.getArticles = (req,res,next) => {
 exports.patchArticleWithUpdatedVotes = (req,res,next) => {
     const {article_id} = req.params;
     const {inc_votes} = req.body;
-    updateArticleWithVotes(article_id, inc_votes).then((response) => {
-        if (response.length === 0){
-            res.status(400).send({msg: "invalid id"})
-        }
-        res.status(201).send(response)
+    updateArticleWithVotes(article_id, inc_votes).then((articles) => {
+        const article = articles[0] 
+        res.status(200).send({article})
     }).catch((err) => {
         next(err)
     })
