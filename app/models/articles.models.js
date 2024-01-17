@@ -1,11 +1,5 @@
 const db = require('../../db/connection')
-const findCommentCountForArticles = require('../utils')
-
-// where i am at:
-
-// problem: the sql injection prveention (using $1 EventCounts.) is not working. fix that
-// need to order the articles from oldest to youngest 
-// u got this:)
+const { articleData } = require('../../db/data/test-data')
 
 exports.fetchArticleById = (article_id) => {
    return db.query(`SELECT * FROM articles WHERE article_id = $1;`,[article_id]).then(({rows}) => {
@@ -31,7 +25,22 @@ exports.fetchArticles = async (sort_by = 'created_at', order = 'DESC') => {
     }).catch((err) => {
         next(err)
     })
-    
+}
+
+
+exports.updateArticleWithVotes = (article_id, inc_votes) => {
+
+    return db.query(
+        `UPDATE articles
+        SET votes =  votes + ${inc_votes}
+        WHERE article_id = ${article_id}
+        RETURNING *;`
+        ).then(({rows}) => {
+            if (rows.length === 0){
+                return Promise.reject({status: 400, msg:"invalid id"})
+            }
+            return rows[0];
+        })
 
 }
    

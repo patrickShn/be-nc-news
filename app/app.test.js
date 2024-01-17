@@ -47,7 +47,7 @@ describe('GET',() => {
         test('test for bad request errors ', async () => {
             const response = await request(app).get('/api/articles/dog');
             expect(400)
-            expect(response.body.msg).toBe("Bad Request")
+            expect(response.body.msg).toBe("bad request")
         })
         test('test for invalid id error ', async () => {
             const response = await request(app).get('/api/articles/99999999');
@@ -97,7 +97,7 @@ describe('GET',() => {
                 })
                 test('test with bad request ', async () => {
                     const badRequest = await request(app).get('/api/articles/dog/comments')
-                    expect(badRequest.body.msg).toBe("psql error")
+                    expect(badRequest.body.msg).toBe("bad request")
                 })
                 test('test with invalid id ', async () => {
                     const invalidIdRequest = await request(app).get('/api/articles/9999999999/comments')
@@ -149,7 +149,7 @@ describe('GET',() => {
                            .send(Comment)
                            .expect(400)
                            .then((response) => {
-                            expect(response.body.msg).toBe("Bad Request")
+                            expect(response.body.msg).toBe("bad request")
                            })
                     })
                     test('404 - invalid id ', () => {
@@ -171,4 +171,55 @@ describe('GET',() => {
         }) 
     })
 
-   
+    describe('PATCH',() => {
+        describe('/api/articles', () => {
+            describe('/:article_id', () => {
+                    test('return with the updated article, with new amount of votes ', () => {
+                        const updateArticle = {
+                            inc_votes: 100
+                        }
+                        return request(app)
+                        .patch(`/api/articles/1`)
+                        .send(updateArticle)
+                        .expect(201)
+                        .then((response) => {
+                            console.log(response.body)
+                            expect(response.body.votes).toEqual(200)
+                            expect(response.body.article_id).toEqual(1)
+                            expect(response.body.topic).toEqual('mitch')
+                        })
+
+                     
+                    })
+                    test('test with bad request', () => {
+                        const updateArticle = {
+                            inc_votes: 100000
+                        }
+                        return request(app)
+                        .patch(`/api/articles/cat`)
+                        .send(updateArticle)
+                        .expect(400)
+                        .then((response) => {
+                            
+                            expect(response.body.msg).toEqual("bad request")
+                        })
+
+                       
+                    })
+                    test('test with invalid id ', () => {
+                        const updateArticle = {
+                            inc_votes: 500
+                        }
+                        return request(app)
+                        .patch(`/api/articles/9999999999`)
+                        .send(updateArticle)
+                        .expect(400)
+                        .then((error) => {
+                            expect(error.body.msg).toEqual("invalid id")
+                        })
+
+                       
+                    })
+                })
+            }) 
+        })
