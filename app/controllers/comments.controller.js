@@ -1,5 +1,5 @@
-const { promises } = require('supertest/lib/test');
-const {fetchCommentsByArticleId, addCommentToArticle} = require('../models/comments.model')
+
+const {fetchCommentsByArticleId, addCommentToArticle, removeCommentFromDb} = require('../models/comments.model')
 
 
 
@@ -23,6 +23,15 @@ exports.postCommentOnSpecificArticle = (req,res,next) => {
     const comment = req.body
     addCommentToArticle(article_id,comment).then((response) => {
             res.status(201).send(response)
+    }).catch((err) => {
+        next(err)
+    })
+}
+
+exports.deleteComment = (req,res,next) => {
+    const {comment_id} = req.params;
+    removeCommentFromDb(comment_id).then((response) => {
+        res.status(204).send()
     }).catch((err) => {
         next(err)
     })

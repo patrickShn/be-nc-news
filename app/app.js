@@ -12,7 +12,7 @@ const {getTopics} = require('./controllers/topics.controller');
 
 const {getArticleById, getArticles, patchArticleWithUpdatedVotes} = require('./controllers/articles.controller')
 
-const {getCommentsByArticleId, postCommentOnSpecificArticle} = require('./controllers/comments.controller.js')
+const {getCommentsByArticleId, postCommentOnSpecificArticle, deleteComment} = require('./controllers/comments.controller.js')
 
 
 //get requests
@@ -35,6 +35,10 @@ app.post('/api/articles/:article_id/comments',postCommentOnSpecificArticle)
 
 app.patch(`/api/articles/:article_id`,patchArticleWithUpdatedVotes)
 
+
+//delete 
+
+app.delete(`/api/comments/:comment_id`,deleteComment)
 
 //error
 
