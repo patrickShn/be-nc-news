@@ -5,6 +5,6 @@ exports.fetchTopics = () => {
     .then((result) => {
         return result.rows
     }).catch((err) =>{
-        return err
+        return Promise.reject({msg:"invalid id"})
     });
 }

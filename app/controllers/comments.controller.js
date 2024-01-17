@@ -20,10 +20,11 @@ exports.getCommentsByArticleId = (req,res,next) => {
 
 exports.postCommentOnSpecificArticle = (req,res,next) => {
     const {article_id} = req.params;
-    const comment = req.body
+    const comment = req.body;
     addCommentToArticle(article_id,comment).then((response) => {
             res.status(201).send(response)
     }).catch((err) => {
+        
         next(err)
     })
 }

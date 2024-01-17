@@ -4,7 +4,7 @@ const app = express();
 
 app.use(express.json())
 
-const {errorHandlerBadForm,errorhandlerinvalid, psqlerror} = require('./errorhandler.js')
+const {errorHandlerBadForm,errorhandlerinvalid, PSQLerror} = require('./errorhandler.js')
 
 const {getDocs} = require('./controllers/api.controller.js')
 
@@ -14,7 +14,7 @@ const {getArticleById, getArticles, patchArticleWithUpdatedVotes} = require('./c
 
 const {getCommentsByArticleId, postCommentOnSpecificArticle, deleteComment} = require('./controllers/comments.controller.js')
 
-
+const {getUsers} = require('./controllers/users.controllers.js')
 //get requests
 
 app.get('/api/topics',getTopics)
@@ -26,6 +26,8 @@ app.get('/api', getDocs)
 app.get('/api/articles',getArticles)
 
 app.get('/api/articles/:article_id/comments',getCommentsByArticleId)
+
+app.get('/api/users',getUsers)
 
 //post reqeusts
 
@@ -43,7 +45,7 @@ app.delete(`/api/comments/:comment_id`,deleteComment)
 //error
 
 
-app.use(psqlerror)
+app.use(PSQLerror)
 app.use(errorHandlerBadForm)
 app.use(errorhandlerinvalid)
 

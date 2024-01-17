@@ -8,7 +8,7 @@ exports.fetchCommentsByArticleId = (article_id) => {
      ORDER BY created_at DESC`
     return db.query(queryStr).then(({rows}) => {
         if (rows.length === 0){
-        return Promise.reject(rows)
+        return Promise.reject({status:400, msg: "invalid id"})
         }
         return rows
     })
@@ -23,6 +23,9 @@ exports.addCommentToArticle = (article_id, comment) => {
     RETURNING 
     *;`, [author, body, `${article_id}`])
     .then(({rows}) => {
+        if (rows.length === 0){
+            return Promise.reject({status:401, msg: "bad input"})
+        }
         return rows[0]
     })
 }
@@ -32,6 +35,9 @@ exports.removeCommentFromDb = (comment_id) => {
     return db.query(`
     DELETE FROM comments
     WHERE comment_id = $1 RETURNING *`,[comment_id]).then(({rows}) => {
+        if (rows.length === 0){
+            return Promise.reject({status: 400 ,msg: "invalid id"})
+        }
         return rows;
     })
 
