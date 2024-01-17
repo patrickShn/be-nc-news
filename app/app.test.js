@@ -63,14 +63,46 @@ describe('GET',() => {
         test('return with an array of article objects, sorted by oldest first ', async () => {
             const response = await request(app).get('/api/articles');
             expect(200)
+            
+            expect(response.body.length).toEqual(articleData.length)
             expect(response.body).toBeSortedBy('created_at',{
                 descending:true,
             })
             response.body.forEach((article) => {
-             expect(typeof article.commentCount).toBe("string")   
+             expect(typeof article.comment_count).toBe("string")   
+             expect(typeof article.title).toBe("string")
              //unsure of how to test number is correct
             })
         })
   })
 })
+
+describe('GET',() => {
+    describe('/api/articles', () => {
+        describe('/:article_id', () => {
+            describe('/comments', () => {
+                test('return with an array of comment objects, sorted by most recent first ', async () => {
+                    const commentsResponse = await request(app).get('/api/articles/3/comments');
+                    expect(Array.isArray(commentsResponse.body)).toBe(true)
+                    expect(commentsResponse.body).toBeSortedBy("created_at",{
+                        descending:true
+                    })
+                    commentsResponse.body.forEach((comment) => {
+                        expect(comment.article_id).toBe(3)
+                        expect(typeof comment.comment_id).toBe("number")
+                    })
+                })
+                test('test with bad request ', async () => {
+                    const badRequest = await request(app).get('/api/articles/dog/comments')
+                    expect(badRequest.body.msg).toBe("psql error")
+                })
+                test('test with invalid id ', async () => {
+                    const invalidIdRequest = await request(app).get('/api/articles/9999999999/comments')
+                    expect(invalidIdRequest.body.msg).toBe("invalid id")
+                })
+            })
+        }) 
+    })
+  })
+
 

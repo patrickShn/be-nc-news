@@ -44,5 +44,13 @@
         "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
   
     }
+  },
+  "GET /api/articles/:article-id/comments" : {
+    "description":"serves all comments for a specific article, responds with an array  ",
+    "queries":["article_id"],
+    "exampleResponse":{
+        
+  
+    }
   }
 }
