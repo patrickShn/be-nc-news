@@ -10,7 +10,7 @@ const {getDocs} = require('./controllers/api.controller.js')
 
 const {getTopics} = require('./controllers/topics.controller');
 
-const {getArticleById, getArticles} = require('./controllers/articles.controller')
+const {getArticleById, getArticles, patchArticleWithUpdatedVotes} = require('./controllers/articles.controller')
 
 const {getCommentsByArticleId, postCommentOnSpecificArticle} = require('./controllers/comments.controller.js')
 
@@ -31,6 +31,12 @@ app.get('/api/articles/:article_id/comments',getCommentsByArticleId)
 
 app.post('/api/articles/:article_id/comments',postCommentOnSpecificArticle)
 
+//patch 
+
+app.patch(`/api/articles/:article_id`,patchArticleWithUpdatedVotes)
+
+
+//error
 
 
 app.use(psqlerror)
