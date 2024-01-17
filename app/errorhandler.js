@@ -21,7 +21,7 @@ exports.errorHandlerBadForm = (err,req,res,next) => {
 
 exports.errorhandlerinvalid = (err,req,res,next) => {
     if (err.length === 0 || err.code === "22003"){
-        res.status(404).send({msg: "invalid id"})
+        res.status(400).send({msg: "invalid id"})
     } 
     if (err.msg === 'invalid id'){
         res.status(400).send(err)

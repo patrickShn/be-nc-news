@@ -51,7 +51,7 @@ describe('GET',() => {
         })
         test('test for invalid id error ', async () => {
             const response = await request(app).get('/api/articles/99999999');
-            expect(404)
+            expect(400)
             expect(response.body.msg).toBe("invalid id")
         });
   })
@@ -109,7 +109,7 @@ describe('GET',() => {
   })
 
 
-  describe('POST',() => {
+describe('POST',() => {
     describe('/api/articles', () => {
         describe('/:article_id', () => {
             describe('/comments', () => {
@@ -152,7 +152,7 @@ describe('GET',() => {
                             expect(response.body.msg).toBe("bad request")
                            })
                     })
-                    test('404 - invalid id ', () => {
+                    test('400 - invalid id ', () => {
                         const Comment ={
                             author:'lurker',
                             body: "hello chum"
@@ -160,7 +160,7 @@ describe('GET',() => {
                            return request(app)
                            .post('/api/articles/999999999999999/comments')
                            .send(Comment)
-                           .expect(404)
+                           .expect(400)
                            .then((response) => {
                             expect(response.body.msg).toBe("invalid id")
                            })
@@ -203,7 +203,7 @@ describe('GET',() => {
                             
                             expect(response.body.msg).toEqual("bad request")
                         })
-
+400
                        
                     })
                     test('test with invalid id ', () => {
@@ -223,3 +223,44 @@ describe('GET',() => {
                 })
             }) 
         })
+
+        describe('DELETE',() => {
+            describe('/api/comments', () => {
+                describe('/:comment id', () => {
+                        test('delete given comment by comment id, return with status 204 and no content ', () => {
+                            return request(app)
+                            .delete(`/api/comments/5`)
+                            .expect(204)
+                            .then((response) => {
+                                expect(response.body).toEqual({})
+                            })
+                         
+                        })
+                        test('test with bad request', () => {
+                            
+                            return request(app)
+                            .delete(`/api/comments/cat`)
+                            
+                            .expect(400)
+                            .then((response) => {
+                                expect(response.body.msg).toEqual("bad request")
+                            })
+    
+                           
+                        })
+                        test('test with invalid id ', () => {
+                           
+                            return request(app)
+                            .delete(`/api/comments/9999999999`)
+                            
+                            .expect(400)
+                            .then((error) => {
+                                console.log(error.body)
+                                expect(error.body.msg).toEqual("invalid id")
+                            })
+    
+                           
+                        })
+                    })
+                }) 
+            })
