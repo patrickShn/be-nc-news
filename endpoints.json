@@ -115,5 +115,41 @@
     "exampleResponse": {
       "users": [{ "username": "drax", "name": "john", "url": "jimmy.com" }]
     }
-  }
+  },
+  "GET /api/articles?topic": {
+    "description": "serves an array of all articles, sorted by topic when given a topic",
+    "queries": ["topic"],
+    "exampleurl":"/api/articles?mitch",
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "mitch", 
+          "note":"filters out any topics that no not have 'mitch' as topic",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "comment_count": 6
+        }
+      ]
+    }
+},"GET /api/articles/:article-id?comment_count": {
+  "description":"get an article by article id, responds with updated article with comment",
+  "queries":["article_id"],
+  "exampleResponse":
+    [
+      {
+        "article_id": 1,
+        "title": "'Living in the shadow of a great man'",
+        "topic": "'mitch',",
+        "author": "butter_bridge'",
+        "body": "'I find this existence challenging'",
+        "created_at": "'2020-07-09T20:11:00.000Z'",
+        "votes": 200,
+        "article_img_url": "'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        "comment_count":20
+      }
+    ]
+}
 }
