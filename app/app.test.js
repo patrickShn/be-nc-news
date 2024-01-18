@@ -41,17 +41,17 @@ describe('GET',() => {
     describe('/api/articles/:article-id', () => {
         test('return with an object describing all endpoints available ', async () => {
             const response = await request(app).get('/api/articles/1');
-            expect(200)
+            expect(response.status).toBe(200)
             expect(response.body.articles.article_id).toBe(1)
         })
         test('test for bad request errors ', async () => {
             const response = await request(app).get('/api/articles/(getartilclebyarticleid)');
-            expect(400)
+            expect(response.status).toBe(400)
             expect(response.body.msg).toBe("invalid input type")
         })
         test('test for invalid id error ', async () => {
             const response = await request(app).get('/api/articles/99999999');
-            expect(400)
+            expect(response.status).toBe(404)
             expect(response.body.msg).toBe("invalid id")
         });
   })
@@ -62,7 +62,7 @@ describe('GET',() => {
     describe('/api/articles', () => {
         test('return with an array of article objects, sorted by oldest first ', async () => {
             const response = await request(app).get('/api/articles');
-            expect(200)
+            expect(response.status).toBe(200)
             expect(response.body.articles.length).toEqual(articleData.length)
             expect(response.body.articles).toBeSortedBy('created_at',{
                 descending:true,
@@ -73,6 +73,49 @@ describe('GET',() => {
              //unsure of how to test number is correct
             })
         })
+        test('return with an array of article objects, filtered by topic', async () => {
+            const response = await request(app).get('/api/articles?topic=mitch');
+            expect(response.status).toBe(200)
+            expect(response.body.articles.length).toEqual(12) 
+            response.body.articles.forEach((article) => {
+             expect(typeof article.article_id).toBe("number")   
+             expect(typeof article.title).toBe("string")
+             expect(article.topic).toBe("mitch")
+            })
+        })
+        test('return error when topic does not exist', async () => {
+            const response = await request(app).get('/api/articles?topic=kjhvblevb')
+            expect(response.body.msg).toBe("topic is not found")
+            expect(response.body.status).toBe(404)
+        })
+       test('should accept "sort_by" and "order" queries and order the data accordingly',() => {
+            return request(app)
+            .get(`/api/articles?sort_by=article_id&order=ASC`)
+            .then((response) => {
+                const articles = response.body.articles;
+                expect(articles).toBeSortedBy('article_id',{
+                    descending:false
+                })
+            })
+        })
+        test('should return rejected promise if sort_by is not valid',() => {
+                return request(app)
+                .get(`/api/articles?sort_by=article_img_url&order=ASC`)
+                .expect(404)
+                .then((response) => {
+                   expect(response.body.msg).toBe("invalid sort_by query")
+                })
+       }) 
+       test('should return rejected promise if order is not valid',() => {
+        return request(app)
+        .get(`/api/articles?sort_by=article_id&order=wertghy`)
+        .expect(404)
+        .then((response) => {
+           expect(response.body.msg).toBe("invalid order type")
+        })
+}) 
+       
+           
   })
 })
 
@@ -231,10 +274,19 @@ describe('POST',() => {
                         .then((error) => {
                             expect(error.body.msg).toEqual("bad input - column doesn't exist")
                             /// i need to update this to include a promise.all
-                        })
-
-                       
+                        }) 
                     })
+                    test('updated article should resopnd with comment_count ', async () => {
+                        const response = await request(app).get(`/api/articles/1`);
+                        expect(response.status).toBe(200)
+                        expect(typeof response.body.articles.comment_count).toBe("string")
+                            expect(response.body.articles.votes).toEqual(100)
+                            expect(response.body.articles.article_id).toEqual(1)
+                            expect(response.body.articles.topic).toEqual('mitch')
+                            expect(response.body.articles.author).toEqual('butter_bridge')
+                            expect(response.body.articles.created_at).toEqual('2020-07-09T20:11:00.000Z')
+                            expect(response.body.articles.article_img_url).toEqual('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
+                        })
                 })
             }) 
         })
@@ -252,10 +304,8 @@ describe('POST',() => {
                          
                         })
                         test('test with bad request', () => {
-                            
                             return request(app)
                             .delete(`/api/comments/cat`)
-                            
                             .expect(400)
                             .then((response) => {
                                 expect(response.body.msg).toEqual("invalid input type")
@@ -293,44 +343,3 @@ describe('GET',() => {
            })
         });
       })
-
-      describe('GET',() => {
-        describe('/api/articles', () => {
-            test('return with an array of article objects, sorted by oldest first ', async () => {
-                const response = await request(app).get('/api/articles?topic=mitch');
-                expect(200)
-                expect(response.body.articles.length).toEqual(12) // there was only 1 article that didn't have the topic of 'mitch' so 13(totalarticles) - 1 = 12
-                response.body.articles.forEach((article) => {
-                 expect(typeof article.comment_count).toBe("string")   
-                 expect(typeof article.article_id).toBe("number")   
-                 expect(typeof article.title).toBe("string")
-                 expect(article.topic).toBe("mitch")
-                })
-            })
-            test('return error when topic does not exist', async () => {
-                const response = await request(app).get('/api/articles?topic=kjhvblevb')
-                expect(400)
-                expect(response.body.msg).toBe("topic is not found")
-
-            })
-               
-            })
-            })
-
-            describe('GET',() => {
-                describe('/api/articles', () => {
-                    describe('/:article_id', () => {
-                            test('updated article should resopnd with comment_count ', async () => {
-                                const response = await request(app).get(`/api/articles/1`);
-                                expect(200)
-                                expect(typeof response.body.articles.comment_count).toBe("string")
-                                    expect(response.body.articles.votes).toEqual(100)
-                                    expect(response.body.articles.article_id).toEqual(1)
-                                    expect(response.body.articles.topic).toEqual('mitch')
-                                    expect(response.body.articles.author).toEqual('butter_bridge')
-                                    expect(response.body.articles.created_at).toEqual('2020-07-09T20:11:00.000Z')
-                                    expect(response.body.articles.article_img_url).toEqual('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
-                                })
-                            })
-                        })
-                    })

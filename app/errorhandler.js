@@ -30,6 +30,22 @@ exports.TopicNotFoundError = (err,req,res,next) => {
     }
 }
 
+exports.invalidSortByQuery = (err,req,res,next) => {
+    if (err.msg === "invalid sort_by query"){
+        res.status(404).send(err)
+    } else {
+        next(err)
+    }
+}
+
+exports.invalidOrderQuery = (err,req,res,next) => {
+    if (err.msg === "invalid order type"){
+        res.status(404).send(err)
+    } else {
+        next(err)
+    }
+} 
+
 exports.errorhandlerinvalid = (err,req,res,next) => {
     if (err.msg === 'invalid id'){
         res.status(404).send(err)
