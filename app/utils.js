@@ -1,15 +1,9 @@
 const db = require('../db/connection')
 
-// exports.findCommentCountForArticles = async (rows) => { 
-//     const updatedRowsWithCommentCount = await Promise.all(rows.map( async (row) => {
-//     const rowArticleId = row.article_id;
-//     const commentCountQuery = await db.query(`SELECT COUNT(*)
-//     FROM comments
-//     WHERE comments.article_id = ${rowArticleId}`)
-//     const commentCount = commentCountQuery.rows[0].count
-//     row.commentCount = commentCount
-//     return row
-// }))
-// console.log()
-// return updatedRowsWithCommentCount
-// }
+exports.checkTopicExists = (topic) => {
+    return db.query(`SELECT * FROM articles WHERE topic = $1`,[topic]).then(({rows}) => {
+        if (rows.length === 0){
+            return Promise.reject({status:404, msg: "topic is not found"})
+        }
+    })
+}

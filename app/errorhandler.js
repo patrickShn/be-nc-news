@@ -22,6 +22,14 @@ exports.errorHandlerBadForm = (err,req,res,next) => {
     }
 }
 
+exports.TopicNotFoundError = (err,req,res,next) => {
+    if (err.msg === "topic is not found"){
+        res.status(400).send(err)
+    } else {
+        next(err)
+    }
+}
+
 exports.errorhandlerinvalid = (err,req,res,next) => {
     if (err.msg === 'invalid id'){
         res.status(404).send(err)

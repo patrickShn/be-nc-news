@@ -108,5 +108,12 @@
     "description":"deletes comment by comment id",
     "queries":["comment_id"],
     "statusshouldbe": 204
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [{ "username": "drax", "name": "john", "url": "jimmy.com" }]
+    }
   }
 }
