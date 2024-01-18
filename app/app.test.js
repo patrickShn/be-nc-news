@@ -13,7 +13,7 @@ afterAll(() => db.end());
 
 describe('GET',() => {
     describe('/api/topics', () => {
-        test.only('return with an array of topic objects, which have a "slug" and "description" property ', () => {
+        test('return with an array of topic objects, which have a "slug" and "description" property ', () => {
             return request(app)
             .get('/api/topics')
             .expect(200)
@@ -29,7 +29,7 @@ describe('GET',() => {
 
 describe('GET',() => {
     describe('/api', () => {
-        test.only('return with an object describing all endpoints available ', async () => {
+        test('return with an object describing all endpoints available ', async () => {
             const response = await request(app).get('/api')
             expect(200)
             expect(response.body).toEqual(endpoints)
@@ -39,17 +39,17 @@ describe('GET',() => {
 
 describe('GET',() => {
     describe('/api/articles/:article-id', () => {
-        test.only('return with an object describing all endpoints available ', async () => {
+        test('return with an object describing all endpoints available ', async () => {
             const response = await request(app).get('/api/articles/1');
             expect(200)
             expect(response.body.article_id).toBe(1)
         })
-        test.only('test.only for bad request errors ', async () => {
+        test('test for bad request errors ', async () => {
             const response = await request(app).get('/api/articles/(getartilclebyarticleid)');
             expect(400)
             expect(response.body.msg).toBe("invalid input type")
         })
-        test.only('test.only for invalid id error ', async () => {
+        test('test for invalid id error ', async () => {
             const response = await request(app).get('/api/articles/99999999');
             expect(400)
             expect(response.body.msg).toBe("invalid id")
@@ -60,15 +60,14 @@ describe('GET',() => {
 
 describe('GET',() => {
     describe('/api/articles', () => {
-        test.only('return with an array of article objects, sorted by oldest first ', async () => {
+        test('return with an array of article objects, sorted by oldest first ', async () => {
             const response = await request(app).get('/api/articles');
             expect(200)
-            
-            expect(response.body.length).toEqual(articleData.length)
-            expect(response.body).toBeSortedBy('created_at',{
+            expect(response.body.articles.length).toEqual(articleData.length)
+            expect(response.body.articles).toBeSortedBy('created_at',{
                 descending:true,
             })
-            response.body.forEach((article) => {
+            response.body.articles.forEach((article) => {
              expect(typeof article.comment_count).toBe("string")   
              expect(typeof article.title).toBe("string")
              //unsure of how to test number is correct
@@ -81,7 +80,7 @@ describe('GET',() => {
     describe('/api/articles', () => {
         describe('/:article_id', () => {
             describe('/comments', () => {
-                test.only('return with an array of comment objects, sorted by most recent first ', async () => {
+                test('return with an array of comment objects, sorted by most recent first ', async () => {
                     const commentsResponse = await request(app).get('/api/articles/3/comments');
                     expect(Array.isArray(commentsResponse.body)).toBe(true)
                     expect(commentsResponse.body).toBeSortedBy("created_at",{
@@ -95,11 +94,11 @@ describe('GET',() => {
                         expect(typeof comment.author).toBe("string")
                     })
                 })
-                test.only('test with bad request ', async () => {
+                test('test with bad request ', async () => {
                     const badRequest = await request(app).get('/api/articles/(getcommentsfromarticlebyarticleid)/comments')
                     expect(badRequest.body.msg).toBe("bad input - column doesn't exist")
                 })
-                test.only('test with invalid id ', async () => {
+                test('test with invalid id ', async () => {
                     const invalidIdRequest = await request(app).get('/api/articles/9999999999/comments')
                     expect(invalidIdRequest.body.msg).toBe("invalid id")
                 })
@@ -113,7 +112,7 @@ describe('POST',() => {
     describe('/api/articles', () => {
         describe('/:article_id', () => {
             describe('/comments', () => {
-                test.only('accepts an object with author and body properties, returns the posted comment' ,() => {
+                test('accepts an object with author and body properties, returns the posted comment' ,() => {
                       return request(app)
                         .post('/api/articles/3/comments')
                         .send({
@@ -127,7 +126,7 @@ describe('POST',() => {
                           expect(response.body.body).toBe("hello, great video.");
                         })
                     })
-                    test.only('400- error for post that is missing properties', () => {
+                    test('400- error for post that is missing properties', () => {
                        const IncompleteComment ={
                         author:'lurker'
                        }
@@ -139,7 +138,7 @@ describe('POST',() => {
                         expect(response.body.msg).toBe("missing one or more properties")
                        })
                     })
-                    test.only('400 - item Id does not exist ', () => {
+                    test('400 - item Id does not exist ', () => {
                         const Comment ={
                             author:'lurker',
                             body: "hello chum"
@@ -152,7 +151,7 @@ describe('POST',() => {
                             expect(response.body.msg).toBe("invalid input type")
                            })
                     })
-                    test.only('400 - invalid id ', () => {
+                    test('400 - invalid id ', () => {
                         const Comment ={
                             author:'lurker',
                             body: "hello chum"
@@ -174,7 +173,7 @@ describe('POST',() => {
     describe('PATCH',() => {
         describe('/api/articles', () => {
             describe('/:article_id', () => {
-                    test.only('return with the updated article, with new amount of votes ', () => {
+                    test('return with the updated article, with new amount of votes ', () => {
                         const updateArticle = {
                             inc_votes: 100
                         }
@@ -194,7 +193,7 @@ describe('POST',() => {
 
                      
                     })
-                    test.only('test with bad request', () => {
+                    test('test with bad request', () => {
                         const updateArticle = {
                             inc_votes: 100000
                         }
@@ -207,7 +206,7 @@ describe('POST',() => {
                             expect(response.body.msg).toEqual("bad input - column doesn't exist")
                         })                       
                     })
-                    test.only('test with invalid id ', () => {
+                    test('test with invalid id ', () => {
                         const updateArticle = {
                             inc_votes: 500
                         }
@@ -221,7 +220,7 @@ describe('POST',() => {
 
                        
                     })
-                    test.only('test if inc_votes is not a number ', () => {
+                    test('test if inc_votes is not a number ', () => {
                         const updateArticle = {
                             inc_votes: 'banana'
                         }
@@ -243,7 +242,7 @@ describe('POST',() => {
         describe('DELETE',() => {
             describe('/api/comments', () => {
                 describe('/:comment id', () => {
-                        test.only('delete given comment by comment id, return with status 204 and no content ', () => {
+                        test('delete given comment by comment id, return with status 204 and no content ', () => {
                             return request(app)
                             .delete(`/api/comments/5`)
                             .expect(204)
@@ -252,7 +251,7 @@ describe('POST',() => {
                             })
                          
                         })
-                        test.only('test with bad request', () => {
+                        test('test with bad request', () => {
                             
                             return request(app)
                             .delete(`/api/comments/cat`)
@@ -264,7 +263,7 @@ describe('POST',() => {
     
                            
                         })
-                        test.only('test with invalid id ', () => {
+                        test('test with invalid id ', () => {
                             return request(app)
                             .delete(`/api/comments/9999`)
                             .expect(404)
@@ -279,12 +278,11 @@ describe('POST',() => {
             })
 describe('GET',() => {
             describe('/api/users', () => {
-                test.only('return with an array of users objects, which have a "username", "name" and "avatar_url" property ', () => {
+                test('return with an array of users objects, which have a "username", "name" and "avatar_url" property ', () => {
                     return request(app)
                     .get('/api/users')
                     .expect(200)
                     .then((response) => {
-                        console.log(response.body.users)
                         response.body.users.forEach((user) => {
                         expect(typeof user.username).toBe("string")
                         expect(typeof user.name).toBe("string")
@@ -294,3 +292,26 @@ describe('GET',() => {
            })
         });
       })
+
+      describe('GET',() => {
+        describe('/api/articles', () => {
+            test('return with an array of article objects, sorted by oldest first ', async () => {
+                const response = await request(app).get('/api/articles?topic=mitch');
+                expect(200)
+                expect(response.body.articles.length).toEqual(12) // there was only 1 article that didn't have the topic of 'mitch' so 13(totalarticles) - 1 = 12
+                response.body.articles.forEach((article) => {
+                 expect(typeof article.comment_count).toBe("string")   
+                 expect(typeof article.article_id).toBe("number")   
+                 expect(typeof article.title).toBe("string")
+                 expect(article.topic).toBe("mitch")
+                })
+            })
+            test('return error when topic does not exist', async () => {
+                const response = await request(app).get('/api/articles?topic=kjhvblevb')
+                expect(400)
+                expect(response.body.msg).toBe("topic is not found")
+
+            })
+               
+            })
+            })

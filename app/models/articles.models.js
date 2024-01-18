@@ -10,7 +10,7 @@ exports.fetchArticleById = (article_id) => {
     })
 }
 
-exports.fetchArticles = async (sort_by = 'created_at', order = 'DESC') => {
+exports.fetchArticles = (topic) => {
     let queryString = `SELECT 
     articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id) AS comment_count
     FROM 
@@ -18,12 +18,11 @@ exports.fetchArticles = async (sort_by = 'created_at', order = 'DESC') => {
     LEFT JOIN 
     comments 
     ON articles.article_id = comments.article_id
+    WHERE articles.topic = $1 OR $1 IS NULL 
     GROUP BY articles.article_id
-    ORDER BY ${sort_by} ${order};`;
-    return db.query(queryString).then(({rows}) => {
+    ORDER BY created_at DESC;`;
+    return db.query(queryString, [topic]).then(({rows}) => {
         return rows
-    }).catch((err) => {
-        next(err)
     })
 }
 
