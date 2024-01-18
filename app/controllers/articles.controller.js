@@ -3,8 +3,8 @@ const {checkTopicExists} = require('../utils')
 
 exports.getArticleById = (req,res,next) => {
     const article_id = req.params.article_id;
-    fetchArticleById(article_id).then((response) => {
-        res.status(200).send(response)
+    fetchArticleById(article_id).then((articles) => {
+        res.status(200).send({articles})
     }).catch((err) => {
         next(err)
     })

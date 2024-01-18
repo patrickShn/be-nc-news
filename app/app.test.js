@@ -42,7 +42,7 @@ describe('GET',() => {
         test('return with an object describing all endpoints available ', async () => {
             const response = await request(app).get('/api/articles/1');
             expect(200)
-            expect(response.body.article_id).toBe(1)
+            expect(response.body.articles.article_id).toBe(1)
         })
         test('test for bad request errors ', async () => {
             const response = await request(app).get('/api/articles/(getartilclebyarticleid)');
@@ -315,3 +315,21 @@ describe('GET',() => {
                
             })
             })
+
+            describe('GET',() => {
+                describe('/api/articles', () => {
+                    describe('/:article_id', () => {
+                            test('updated article should resopnd with comment_count ', async () => {
+                                const response = await request(app).get(`/api/articles/1`);
+                                expect(200)
+                                expect(typeof response.body.articles.comment_count).toBe("string")
+                                    expect(response.body.articles.votes).toEqual(100)
+                                    expect(response.body.articles.article_id).toEqual(1)
+                                    expect(response.body.articles.topic).toEqual('mitch')
+                                    expect(response.body.articles.author).toEqual('butter_bridge')
+                                    expect(response.body.articles.created_at).toEqual('2020-07-09T20:11:00.000Z')
+                                    expect(response.body.articles.article_img_url).toEqual('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
+                                })
+                            })
+                        })
+                    })
