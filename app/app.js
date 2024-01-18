@@ -4,7 +4,7 @@ const app = express();
 
 app.use(express.json())
 
-const {errorHandlerBadForm,errorhandlerinvalid, PSQLerror, TopicNotFoundError} = require('./errorhandler.js')
+const {errorHandlerBadForm,errorhandlerinvalid, PSQLerror, TopicNotFoundError, invalidOrderQuery, invalidSortByQuery} = require('./errorhandler.js')
 
 const {getDocs} = require('./controllers/api.controller.js')
 
@@ -49,6 +49,8 @@ app.delete(`/api/comments/:comment_id`,deleteComment)
 app.use(PSQLerror)
 app.use(errorHandlerBadForm)
 app.use(TopicNotFoundError)
+app.use(invalidSortByQuery)
+app.use(invalidOrderQuery)
 app.use(errorhandlerinvalid)
 
 

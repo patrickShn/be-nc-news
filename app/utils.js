@@ -7,3 +7,5 @@ exports.checkTopicExists = (topic) => {
         }
     })
 }
+
+
