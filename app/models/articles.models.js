@@ -1,6 +1,4 @@
 const db = require('../../db/connection')
-const { articleData } = require('../../db/data/test-data')
-const {checkIfSortByIsAcceptable,checkIforderIsAcceptable} = require('../utils')
 
 exports.fetchArticleById = (article_id) => {
    return db.query(`SELECT 
@@ -61,4 +59,28 @@ exports.updateArticleWithVotes = (article_id, inc_votes) => {
         })
 
 }
-   
+
+exports.insertNewArticle = async (newArticle) => {
+    const {author,title,body,topic,article_img_url} = newArticle
+    const acceptableTopics = ['mitch','cats','paper']
+
+    if (!acceptableTopics.includes(topic)){
+        return Promise.reject({status: 404, msg: "topic is not found"})
+    }
+    const insertquery = await db.query(`INSERT INTO articles (author,title,topic,body,article_img_url) 
+    VALUES
+    ($1,$2,$3,$4,$5)`,[author,title,topic,body,article_img_url])
+
+    return db.query(`SELECT articles.*
+    FROM articles
+    WHERE title = $1;
+    `,[title]).then(({rows}) => {
+        let newArticle = rows[0]
+        newArticle.comment_count = 0
+        return newArticle
+    })
+
+  
+}
+
+

@@ -24,7 +24,16 @@ exports.errorHandlerBadForm = (err,req,res,next) => {
 
 exports.TopicNotFoundError = (err,req,res,next) => {
     if (err.msg === "topic is not found"){
-        res.status(400).send(err)
+        console.log(err)
+        res.status(404).send(err)
+    } else {
+        next(err)
+    }
+}
+
+exports.userNotFoundError = (err,req,res,next) => {
+    if (err.msg === "username not found"){
+        res.status(404).send(err)
     } else {
         next(err)
     }

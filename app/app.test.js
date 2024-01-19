@@ -1,14 +1,14 @@
-const app = require('./app.js')
+const app = require('./appOld.js')
 const request = require('supertest')
 const db = require('../db/connection.js')
 const seed = require('../db/seeds/seed.js')
-const {articleData, commentData, topicData, userData} = require('../db/data/test-data/index.js')
+const testData = require('../db/data/test-data/index.js')
 const endpoints = require('../endpoints.json')
 
 
 
 
-beforeEach(() => seed({articleData, commentData, topicData, userData}));
+beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe('GET',() => {
@@ -63,7 +63,7 @@ describe('GET',() => {
         test('return with an array of article objects, sorted by oldest first ', async () => {
             const response = await request(app).get('/api/articles');
             expect(response.status).toBe(200)
-            expect(response.body.articles.length).toEqual(articleData.length)
+            expect(response.body.articles.length).toEqual(testData.articleData.length)
             expect(response.body.articles).toBeSortedBy('created_at',{
                 descending:true,
             })
@@ -153,6 +153,50 @@ describe('GET',() => {
 
 describe('POST',() => {
     describe('/api/articles', () => {
+        test('accepts a new article, returns the new article with the properties.' ,() => {
+            const newArticle = 
+                {
+                    title: "the meaning of maths",
+                    topic: "mitch",
+                    author: "butter_bridge",
+                    body: "2+2=5",
+                    article_img_url:
+                      "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+                  }
+            return request(app)
+                    .post(`/api/articles`)
+                    .send(newArticle)
+                    .expect(201)
+                    .then((response) => {
+                        console.log(response.body)
+                        expect(response.body.article.length).not.toBe(0)
+                        expect(response.body.article.author).toBe("butter_bridge")
+                        expect(response.body.article.topic).toBe("mitch")
+                        expect(response.body.article.title).toBe("the meaning of maths")
+                        expect(response.body.article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700")
+                        expect(response.body.article.article_id).toBe(14)
+                        expect(response.body.article.votes).toBe(0)
+                        expect(typeof response.body.article.created_at).toBe("string")
+                        expect(response.body.article.comment_count).toBe(0)
+                    })
+        })
+        test('return error if topic is not found',() => {
+            const newArticle = {
+                title: "the meaning of maths",
+                topic: "balbalbla",
+                author: "butter_bridge",
+                body: "2+2=5",
+                article_img_url:
+                  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+              } 
+                return request(app)
+                        .post('/api/articles')
+                        .send(newArticle)
+                        .expect(404)
+                        .then((err) => {
+                            expect(err.body.msg).toBe("topic is not found")
+                        })
+        })
         describe('/:article_id', () => {
             describe('/comments', () => {
                 test('accepts an object with author and body properties, returns the posted comment' ,() => {
@@ -167,6 +211,7 @@ describe('POST',() => {
                           expect(response.body.article_id).toBe(3);
                           expect(response.body.author).toBe('butter_bridge');
                           expect(response.body.body).toBe("hello, great video.");
+                          expect(response.body.votes).toBe(0);
                         })
                     })
                     test('400- error for post that is missing properties', () => {
@@ -218,14 +263,14 @@ describe('POST',() => {
             describe('/:article_id', () => {
                     test('return with the updated article, with new amount of votes ', () => {
                         const updateArticle = {
-                            inc_votes: 100
+                            inc_votes: -1
                         }
                         return request(app)
                         .patch(`/api/articles/1`)
                         .send(updateArticle)
                         .expect(200)
                         .then((response) => {
-                            expect(response.body.article.votes).toEqual(200)
+                            expect(response.body.article.votes).toEqual(99)
                             expect(response.body.article.article_id).toEqual(1)
                             expect(response.body.article.topic).toEqual('mitch')
                             expect(response.body.article.author).toEqual('butter_bridge')
@@ -343,3 +388,112 @@ describe('GET',() => {
            })
         });
       })
+      describe('GET',() => {
+        describe('/api/users/:username', () => {
+            test('return a user by the username ', () => {
+                return request(app)
+                .get('/api/users/butter_bridge')
+                .expect(200)
+                .then((response) => {
+                    expect(response.body.user.length).not.toBe(0)
+                    response.body.user.forEach((user) => {
+                        
+                    expect(user.username).toBe("butter_bridge")
+                    expect(user.name).toBe("jonny")
+                    expect(user.avatar_url).toBe("https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg")  
+                   })
+            })   
+       })   
+            test('return error if username does not exist',() => {
+                return request(app)
+                .get('/api/users/dljfvhbejlv')
+                .expect(404)
+                .then((response) => {
+
+                    expect(response.body.msg).toBe("username not found")
+                })
+            })
+    });
+  })
+
+
+  describe('PATCH',() => {
+    describe('/api/comments', () => {
+        describe('/:comment id', () => {
+                test('update the votes on a comment given the comments id ', () => {
+                    const voteObj = {
+                        inc_votes : 1
+                    }
+                    return request(app)
+                    .patch(`/api/comments/1`)
+                    .send(voteObj)
+                    .expect(200)
+                    .then((comment) => {
+                        expect(comment.body.votes).toBe(17)
+                    })
+                 
+                })
+                test('check that negative votes decreases votes ', () => {
+                    const voteObj = {
+                        inc_votes : -10
+                    }
+                    return request(app)
+                    .patch(`/api/comments/1`)
+                    .send(voteObj)
+                    .expect(200)
+                    .then((comment) => {
+                        expect(comment.body.votes).toBe(6)
+                        expect(comment.body.comment_id).toBe(1)
+                        expect(comment.body.body).toBe("Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!")
+                        expect(comment.body.author).toBe("butter_bridge")
+                        expect(comment.body.created_at).toBe('2020-04-06T12:17:00.000Z')
+                    })
+                 
+                })
+                test('test with bad request', () => {
+                    const voteObj = {
+                        inc_votes : 1
+                    }
+                    return request(app)
+                    .patch(`/api/comments/cat`)
+                    .send(voteObj)
+                    .expect(400)
+                    .then((response) => {
+                        expect(response.body.msg).toEqual("invalid input type")
+                    })
+
+                   
+                })
+                test('test with invalid id ', () => {
+                    const voteObj = {
+                        inc_votes : 1
+                    };
+                    return request(app)
+                    .patch(`/api/comments/9999`)
+                    .send(voteObj)
+                    .expect(404)
+                    .then((error) => {
+                        expect(error.body.msg).toEqual("invalid id")
+                    })
+                })
+                test('test if inc_votes is not a number ', () => {
+                    const updateArticle = {
+                        inc_votes: 'banana'
+                    }
+                    return request(app)
+                    .patch(`/api/comments/1`)
+                    .send(updateArticle)
+                    .expect(404)
+                    .then((error) => {
+                        expect(error.body.msg).toEqual("bad input - column doesn't exist")
+                    }) 
+                })
+            })
+        }) 
+    })
+
+
+
+
+
+

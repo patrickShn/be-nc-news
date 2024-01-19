@@ -14,8 +14,9 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles",
+    "description": "serves an array of all articles, sorted by created_at and ordered by descending as dafault",
     "queries": ["author", "topic", "sort_by", "order"],
+
     "exampleResponse": {
       "articles": [
         {
@@ -151,5 +152,46 @@
         "comment_count":20
       }
     ]
+},
+"PATCH /api/comments/:comment_id/": {
+  "description":"update comment votes by comment id, responds with updated comment",
+  "requestAccepts" : {
+    "voting object": {"inc_votes":"100"},
+    "newVote" :"how much the vote will be updated by"
+  },
+  "queries":["comment_id"],
+  "exampleResponse":
+    [
+      {
+        "comment_id": 1,
+        "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        "article_id": 9,
+        "author": "butter_bridge",
+        "votes": "originalvote+ inc_voteds",
+        "created_at": "'2020-04-06T12:17:00.000Z'"
+      }
+    ]
+},
+"POST /api/articles": {
+  "description":"accepts an article object, returns a newly added article ",
+  "example query": {
+    "author": "xyz",
+    "title": "the meaning of maths",
+    "body": "lorem ipsum",
+    "topic": "football",
+    "article_img-url": "https.lol.com/img_asdfghy"
+  },
+  "exampleResponse":
+  {
+    "article_id": 20,
+    "title": "the meaning of maths",
+    "topic": "'football',",
+    "author": "xyz",
+    "body": "lorem ipsum",
+    "created_at": "<whenever>",
+    "votes": 200,
+    "article_img_url": "https.lol.com/img_asdfghy",
+    "comment_count":20
+  }
 }
 }
