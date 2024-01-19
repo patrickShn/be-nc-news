@@ -15,13 +15,12 @@ exports.fetchCommentsByArticleId = (article_id) => {
 }
 
 exports.addCommentToArticle = (article_id, comment) => {
-    const body = comment.body;
-    const author = comment.author;
+    const {body,author} = comment;
     return db.query(`INSERT INTO comments (author, body, article_id)
     VALUES
     ($1 ,$2, $3)
     RETURNING 
-    *;`, [author, body, `${article_id}`])
+    *;`, [author, body, article_id])
     .then(({rows}) => {
         if (rows.length === 0){
             return Promise.reject({status:401, msg: "bad input"})
@@ -39,6 +38,21 @@ exports.removeCommentFromDb = (comment_id) => {
             return Promise.reject({status: 400 ,msg: "invalid id"})
         }
         return rows;
+    })
+
+}
+
+
+exports.amendCommentVotes = (comment_id, inc_votes) => {
+
+    return db.query(` UPDATE comments
+    SET votes = votes + ${inc_votes}
+    WHERE comment_id = $1
+    RETURNING *`,[comment_id]).then(({rows}) => {
+        if (rows.length === 0){
+            return Promise.reject({status:404, msg: "invalid id"})
+        }
+        return rows[0];
     })
 
 }
