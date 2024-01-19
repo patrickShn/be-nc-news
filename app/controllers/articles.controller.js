@@ -12,17 +12,19 @@ exports.getArticleById = (req,res,next) => {
 
 
 exports.getArticles = (req,res,next) => {
-    const {topic, sort_by, order} = req.query;
-    const fetchArticlesQuery = fetchArticles(topic,sort_by,order);
+    const {topic, sort_by, order,limit,p} = req.query;
+    const fetchArticlesQuery = fetchArticles(topic,sort_by,order,limit,p);
     const queries = [fetchArticlesQuery]
     if (topic){
         const topicExistenceQuery = checkTopicExists(topic);
         queries.push(topicExistenceQuery)
     }
     Promise.all(queries).then((responses) => {
-        const articles = responses[0]
-        res.status(200).send({ articles })
+        let articles = responses[0];
+        const total_count = articles.length;
+        res.status(200).send({ articles, total_count })
     }).catch((err) => {
+        console.log(err)
         next(err)
     })
 }
@@ -46,7 +48,6 @@ exports.addNewArticle = (req,res,next) => {
         console.log(article)
         res.status(201).send({article})
     }).catch((err) => {
-        console.log(err)
             next(err)
     })
 }

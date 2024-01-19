@@ -24,7 +24,6 @@ exports.errorHandlerBadForm = (err,req,res,next) => {
 
 exports.TopicNotFoundError = (err,req,res,next) => {
     if (err.msg === "topic is not found"){
-        console.log(err)
         res.status(404).send(err)
     } else {
         next(err)

@@ -18,7 +18,7 @@ exports.fetchArticleById = (article_id) => {
     })
 }
 
-exports.fetchArticles = (topic,sort_by = 'created_at',order = 'DESC') => {
+exports.fetchArticles = (topic,sort_by = 'created_at',order = 'DESC', limit = 10, p = 1) => {
     const acceptableSortBy = ['article_id','votes','created_at','comment_count','author','title']
     const acceptableOrder = ['ASC','DESC'];
     if (!acceptableSortBy.includes(sort_by)){
@@ -36,8 +36,9 @@ exports.fetchArticles = (topic,sort_by = 'created_at',order = 'DESC') => {
     ON articles.article_id = comments.article_id
     WHERE articles.topic = $1 OR $1 IS NULL 
     GROUP BY articles.article_id
-    ORDER BY ${sort_by} ${order}`;
-    return db.query(queryString, [topic]).then(({rows}) => {
+    ORDER BY ${sort_by} ${order}
+    LIMIT $2;`;
+    return db.query(queryString, [topic,limit]).then(({rows}) => {
         return rows
     })
 }

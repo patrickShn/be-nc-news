@@ -70,7 +70,6 @@ describe('GET',() => {
             response.body.articles.forEach((article) => {
              expect(typeof article.comment_count).toBe("string")   
              expect(typeof article.title).toBe("string")
-             //unsure of how to test number is correct
             })
         })
         test('return with an array of article objects, filtered by topic', async () => {
@@ -112,11 +111,20 @@ describe('GET',() => {
         .expect(404)
         .then((response) => {
            expect(response.body.msg).toBe("invalid order type")
+        })  
         })
-}) 
-       
-           
-  })
+        test.only('should accept limit as parameter and present that many requests(default to 10)' ,() => {
+            return request(app)
+            .get('/api/articles?sort_by=article_id&limit=5&p=2&order=ASC')
+            .expect(200)
+            .then((response) => {
+            
+                expect(response.body.total_count).toBe(5)
+                // expect(response.body.articles[0].article_id).toBe(6)
+
+            })
+        })  
+})
 })
 
 describe('GET',() => {
@@ -168,7 +176,6 @@ describe('POST',() => {
                     .send(newArticle)
                     .expect(201)
                     .then((response) => {
-                        console.log(response.body)
                         expect(response.body.article.length).not.toBe(0)
                         expect(response.body.article.author).toBe("butter_bridge")
                         expect(response.body.article.topic).toBe("mitch")
