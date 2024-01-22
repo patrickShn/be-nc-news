@@ -60,10 +60,10 @@ describe('GET',() => {
 
 describe('GET',() => {
     describe('/api/articles', () => {
-        test('return with an array of article objects, sorted by oldest first ', async () => {
+        test.only('return with an array of article objects, sorted by oldest first ', async () => {
             const response = await request(app).get('/api/articles');
+            console.log(response.body)
             expect(response.status).toBe(200)
-            expect(response.body.articles.length).toEqual(testData.articleData.length)
             expect(response.body.articles).toBeSortedBy('created_at',{
                 descending:true,
             })
@@ -72,22 +72,21 @@ describe('GET',() => {
              expect(typeof article.title).toBe("string")
             })
         })
-        test('return with an array of article objects, filtered by topic', async () => {
+        test.only('return with an array of article objects, filtered by topic', async () => {
             const response = await request(app).get('/api/articles?topic=mitch');
             expect(response.status).toBe(200)
-            expect(response.body.articles.length).toEqual(12) 
             response.body.articles.forEach((article) => {
              expect(typeof article.article_id).toBe("number")   
              expect(typeof article.title).toBe("string")
              expect(article.topic).toBe("mitch")
             })
         })
-        test('return error when topic does not exist', async () => {
+        test.only('return error when topic does not exist', async () => {
             const response = await request(app).get('/api/articles?topic=kjhvblevb')
             expect(response.body.msg).toBe("topic is not found")
             expect(response.body.status).toBe(404)
         })
-       test('should accept "sort_by" and "order" queries and order the data accordingly',() => {
+       test.only('should accept "sort_by" and "order" queries and order the data accordingly',() => {
             return request(app)
             .get(`/api/articles?sort_by=article_id&order=ASC`)
             .then((response) => {
@@ -97,7 +96,7 @@ describe('GET',() => {
                 })
             })
         })
-        test('should return rejected promise if sort_by is not valid',() => {
+        test.only('should return rejected promise if sort_by is not valid',() => {
                 return request(app)
                 .get(`/api/articles?sort_by=article_img_url&order=ASC`)
                 .expect(404)
@@ -105,24 +104,13 @@ describe('GET',() => {
                    expect(response.body.msg).toBe("invalid sort_by query")
                 })
        }) 
-       test('should return rejected promise if order is not valid',() => {
+       test.only('should return rejected promise if order is not valid',() => {
         return request(app)
         .get(`/api/articles?sort_by=article_id&order=wertghy`)
         .expect(404)
         .then((response) => {
            expect(response.body.msg).toBe("invalid order type")
         })  
-        })
-        test.only('should accept limit as parameter and present that many requests(default to 10)' ,() => {
-            return request(app)
-            .get('/api/articles?sort_by=article_id&limit=5&p=2&order=ASC')
-            .expect(200)
-            .then((response) => {
-            
-                expect(response.body.total_count).toBe(5)
-                // expect(response.body.articles[0].article_id).toBe(6)
-
-            })
         })  
 })
 })

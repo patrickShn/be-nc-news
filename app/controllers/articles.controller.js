@@ -21,10 +21,8 @@ exports.getArticles = (req,res,next) => {
     }
     Promise.all(queries).then((responses) => {
         let articles = responses[0];
-        const total_count = articles.length;
-        res.status(200).send({ articles, total_count })
+        res.status(200).send({articles})
     }).catch((err) => {
-        console.log(err)
         next(err)
     })
 }
@@ -45,7 +43,6 @@ exports.addNewArticle = (req,res,next) => {
     const newArticle = req.body;
     
     insertNewArticle(newArticle).then((article) => {
-        console.log(article)
         res.status(201).send({article})
     }).catch((err) => {
             next(err)

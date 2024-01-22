@@ -36,9 +36,8 @@ exports.fetchArticles = (topic,sort_by = 'created_at',order = 'DESC', limit = 10
     ON articles.article_id = comments.article_id
     WHERE articles.topic = $1 OR $1 IS NULL 
     GROUP BY articles.article_id
-    ORDER BY ${sort_by} ${order}
-    LIMIT $2;`;
-    return db.query(queryString, [topic,limit]).then(({rows}) => {
+    ORDER BY ${sort_by} ${order};`;
+    return db.query(queryString, [topic]).then(({rows}) => {
         return rows
     })
 }
