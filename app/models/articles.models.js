@@ -18,7 +18,7 @@ exports.fetchArticleById = (article_id) => {
     })
 }
 
-exports.fetchArticles = (topic,sort_by = 'created_at',order = 'DESC', limit = 10, p = 1) => {
+exports.fetchArticles = (topic,sort_by = 'created_at',order = 'DESC') => {
     const acceptableSortBy = ['article_id','votes','created_at','comment_count','author','title']
     const acceptableOrder = ['ASC','DESC'];
     if (!acceptableSortBy.includes(sort_by)){
