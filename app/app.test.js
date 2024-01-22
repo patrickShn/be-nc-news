@@ -30,7 +30,7 @@ describe('GET',() => {
 describe('GET',() => {
     describe('/api', () => {
         test('return with an object describing all endpoints available ', async () => {
-            const response = await request(app).get('/api')
+            const response = await request(app).get('/')
             expect(200)
             expect(response.body).toEqual(endpoints)
         });
@@ -60,10 +60,10 @@ describe('GET',() => {
 
 describe('GET',() => {
     describe('/api/articles', () => {
-        test.only('return with an array of article objects, sorted by oldest first ', async () => {
+        test('return with an array of article objects, sorted by oldest first ', async () => {
             const response = await request(app).get('/api/articles');
-            console.log(response.body)
             expect(response.status).toBe(200)
+            console.log(response.body)
             expect(response.body.articles).toBeSortedBy('created_at',{
                 descending:true,
             })
@@ -72,7 +72,7 @@ describe('GET',() => {
              expect(typeof article.title).toBe("string")
             })
         })
-        test.only('return with an array of article objects, filtered by topic', async () => {
+        test('return with an array of article objects, filtered by topic', async () => {
             const response = await request(app).get('/api/articles?topic=mitch');
             expect(response.status).toBe(200)
             response.body.articles.forEach((article) => {
@@ -81,12 +81,12 @@ describe('GET',() => {
              expect(article.topic).toBe("mitch")
             })
         })
-        test.only('return error when topic does not exist', async () => {
+        test('return error when topic does not exist', async () => {
             const response = await request(app).get('/api/articles?topic=kjhvblevb')
             expect(response.body.msg).toBe("topic is not found")
             expect(response.body.status).toBe(404)
         })
-       test.only('should accept "sort_by" and "order" queries and order the data accordingly',() => {
+       test('should accept "sort_by" and "order" queries and order the data accordingly',() => {
             return request(app)
             .get(`/api/articles?sort_by=article_id&order=ASC`)
             .then((response) => {
@@ -96,7 +96,7 @@ describe('GET',() => {
                 })
             })
         })
-        test.only('should return rejected promise if sort_by is not valid',() => {
+        test('should return rejected promise if sort_by is not valid',() => {
                 return request(app)
                 .get(`/api/articles?sort_by=article_img_url&order=ASC`)
                 .expect(404)
@@ -104,7 +104,7 @@ describe('GET',() => {
                    expect(response.body.msg).toBe("invalid sort_by query")
                 })
        }) 
-       test.only('should return rejected promise if order is not valid',() => {
+       test('should return rejected promise if order is not valid',() => {
         return request(app)
         .get(`/api/articles?sort_by=article_id&order=wertghy`)
         .expect(404)
@@ -373,6 +373,7 @@ describe('GET',() => {
                     .get('/api/users')
                     .expect(200)
                     .then((response) => {
+                        console.log(response.body)
                         expect(response.body.users.length).not.toBe(0)
                         response.body.users.forEach((user) => {
                         expect(typeof user.username).toBe("string")
@@ -390,7 +391,7 @@ describe('GET',() => {
                 .get('/api/users/butter_bridge')
                 .expect(200)
                 .then((response) => {
-                    expect(response.body.user.length).not.toBe(0)
+                    expect(response.body.user.length).toBe(1)
                     response.body.user.forEach((user) => {
                         
                     expect(user.username).toBe("butter_bridge")

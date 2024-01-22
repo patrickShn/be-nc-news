@@ -20,10 +20,10 @@ const {getArticleById, getArticles, patchArticleWithUpdatedVotes, addNewArticle}
 
 const {getCommentsByArticleId, postCommentOnSpecificArticle, deleteComment, updateCommentVotesByCommentId} = require('./controllers/comments.controller.js')
 
-const {getUsers, getUsersById} = require('./controllers/users.controllers.js')
+const {getUsers, getUsersByUsername} = require('./controllers/users.controllers.js')
 //get requests
 
-app.get('/api',getDocs)
+app.get('/',getDocs)
 
 app.get('/api/topics',getTopics)
 
@@ -35,7 +35,7 @@ app.get('/api/articles/:article_id/comments',getCommentsByArticleId)
 
 app.get('/api/users',getUsers)
 
-app.get('/api/users/:username',getUsersById)
+app.get('/api/users/:username',getUsersByUsername)
 
 
 //post reqeusts
