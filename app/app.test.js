@@ -41,6 +41,7 @@ describe('GET',() => {
     describe('/api/articles/:article-id', () => {
         test('return with an object describing all endpoints available ', async () => {
             const response = await request(app).get('/api/articles/1');
+            console.log(response.body)
             expect(response.status).toBe(200)
             expect(response.body.articles.article_id).toBe(1)
         })
