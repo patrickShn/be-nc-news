@@ -30,7 +30,7 @@ describe('GET',() => {
 describe('GET',() => {
     describe('/api', () => {
         test('return with an object describing all endpoints available ', async () => {
-            const response = await request(app).get('/')
+            const response = await request(app).get('/api')
             expect(200)
             expect(response.body).toEqual(endpoints)
         });

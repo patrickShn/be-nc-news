@@ -23,7 +23,7 @@ const {getCommentsByArticleId, postCommentOnSpecificArticle, deleteComment, upda
 const {getUsers, getUsersByUsername} = require('./controllers/users.controllers.js')
 //get requests
 
-app.get('/',getDocs)
+app.get('/api',getDocs)
 
 app.get('/api/topics',getTopics)
 
