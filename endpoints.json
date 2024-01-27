@@ -16,7 +16,7 @@
   "GET /api/articles": {
     "description": "serves an array of all articles, sorted by created_at and ordered by descending as dafault",
     "queries": ["author", "topic", "sort_by", "order", "limit- sets limit on number of request (default to 10)", "p - sets page at which to start at"],
-    "examplequery": "/api/articles?sort_by=article_id?order=ASC?limit=5?p=2",
+    "examplequery": "/api/articles?sort_by=article_id&&order=ASC&&limit=5?p=2",
     "exampleResponse": {
       "explanation": "would be 5 articles beginning at article 6",
         "articles": [
