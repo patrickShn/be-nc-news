@@ -1,4 +1,4 @@
-const app = require('./appOld.js')
+const app = require('./app-routed.js')
 const request = require('supertest')
 const db = require('../db/connection.js')
 const seed = require('../db/seeds/seed.js')
@@ -41,7 +41,6 @@ describe('GET',() => {
     describe('/api/articles/:article-id', () => {
         test('return with an object describing all endpoints available ', async () => {
             const response = await request(app).get('/api/articles/1');
-            console.log(response.body)
             expect(response.status).toBe(200)
             expect(response.body.articles.article_id).toBe(1)
         })
@@ -64,7 +63,6 @@ describe('GET',() => {
         test('return with an array of article objects, sorted by oldest first ', async () => {
             const response = await request(app).get('/api/articles');
             expect(response.status).toBe(200)
-            console.log(response.body)
             expect(response.body.articles).toBeSortedBy('created_at',{
                 descending:true,
             })
@@ -374,7 +372,6 @@ describe('GET',() => {
                     .get('/api/users')
                     .expect(200)
                     .then((response) => {
-                        console.log(response.body)
                         expect(response.body.users.length).not.toBe(0)
                         response.body.users.forEach((user) => {
                         expect(typeof user.username).toBe("string")
