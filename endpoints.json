@@ -73,6 +73,13 @@
   "POST /api/articles/:article-id/comments": {
     "description":"accepts a comments object, returns the posted comment and adds comment to data ",
     "queries":["article_id"],
+    "requestaccepts": 
+      [
+      {
+        "author": "butter_bridge",
+        "body": "hello, great video."
+      }
+    ],
     "exampleResponse":
       [
         {
