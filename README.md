@@ -5,7 +5,7 @@
   Project Summary:
     A database of users, comments, topics, and articles,similar to a social media app such as Reddit. the user can execute CRUD operations. 
   
-  Link to hosted version:
+  Link to hosted version (the API is hosted on the free version of Render so it may take a moment to start working):
   https://be-nc-news-famm.onrender.com/api
 
   
@@ -32,7 +32,7 @@
   4)pg
   5)supertest
   
-  DevDpendancies to install:
+  DevDependancies to install:
   1) jest
   2) jest-sorted
   3) pg-format
@@ -48,8 +48,6 @@
   
     2) create .env.dev file and set PGDATABASE equal to name of development database
 
-  to test: 
-  npm run t
 
 
   
